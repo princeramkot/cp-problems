@@ -1,0 +1,63 @@
+class Solution {
+public:
+    int maximum(int l, int r, int c)
+    {
+        
+        if(l>=r && l>=c)
+            return l;
+        else if(r>=l && r>=c)
+            return r;
+        else return c;
+    }
+    
+    
+   int  max_crossing_subarray(vector<int> nums, int low, int mid, int high)
+{
+
+  int left_sum = -99999999;
+int   sum = 0;
+  for (int i=mid;i>= low;i--)
+  {
+    sum = sum+nums[i];
+    if (sum>left_sum)
+      left_sum = sum;
+  }
+
+int   right_sum = -9999999;
+  sum = 0;
+
+  for (int i=mid+1 ;i<= high;i++)
+  {
+    sum=sum+nums[i];
+    if (sum>right_sum)
+      right_sum = sum;
+  }
+
+  return (left_sum+right_sum);
+}
+    
+    
+    int max_sum_subarray(vector<int> nums, int low,int  high)
+{
+  if (high == low) 
+  {
+    return nums[high];
+  }
+
+  int mid = (high+low)/2;
+
+ int  maximum_sum_left_subarray = max_sum_subarray(nums, low, mid);
+ int  maximum_sum_right_subarray = max_sum_subarray(nums, mid+1, high);
+  int maximum_sum_crossing_subarray = max_crossing_subarray(nums, low, mid, high);
+
+  
+  return maximum(maximum_sum_left_subarray, maximum_sum_right_subarray, maximum_sum_crossing_subarray);
+}
+    int maxSubArray(vector<int>& nums) {
+        
+        int low=0,high=nums.size()-1;
+    int m= max_sum_subarray(nums, low, high);
+        return m;
+        
+    }
+};
