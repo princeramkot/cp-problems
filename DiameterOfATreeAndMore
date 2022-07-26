@@ -1,0 +1,108 @@
+#include<bits/stdc++.h>
+#define ll long long
+#define pb push_back
+#define fr(a,b) for(int i = a; i < b; i++)
+#define rep(i,a,b) for(int i = a; i < b; i++)
+#define mod 1000000007
+#define inf (1LL<<60)
+#define all(x) (x).begin(), (x).end()
+#define fast_io ios_base::sync_with_stdio(false);cin.tie(NULL)
+#define read(x) int x; cin >> x
+#define reads(x) string x; cin>>x
+#define readl(x) long long x; cin >> x
+#define int long long
+using namespace std;
+
+
+struct Node
+{
+	vector<Node*>child;
+	int distance;
+	bool partOfDiameter=false;
+	//https://codeforces.com/gym/102694/problem/B
+
+};
+
+
+void bfs(Node* current, vector<Node*>&nodes)
+{
+	for(auto child:nodes){
+		child->distance=-1;
+	}
+	
+	queue<Node*>q;
+	
+	current->distance=0;
+	q.push(current);
+	while(!q.empty()){
+		Node* temp=q.front();
+		q.pop();
+		
+		
+		for(auto child:temp->child){
+			if(child->distance==-1)
+			{
+				child->distance=temp->distance+1;
+				q.push(child);
+			}
+			
+		}
+	}
+	
+}
+
+Node* farthest(vector<Node*>&nodes){
+	Node* ans=nodes[0];
+
+	for(auto child:nodes){
+		if(child->distance>ans->distance){
+			ans=child;
+		}
+	}
+	
+	return ans;
+}
+
+
+signed main(){
+int n;cin>>n;
+
+vector<Node*>nodes(n);
+
+for(int i=0;i<n;i++)
+nodes[i]=new Node();
+
+for(int i=0;i<n-1;i++){
+	int a,b;cin>>a>>b;
+	a--,b--;
+	
+	nodes[a]->child.push_back(nodes[b]);
+	nodes[b]->child.push_back(nodes[a]);
+}
+
+bfs(nodes[0],nodes);
+
+Node* farthestNode=farthest(nodes);
+
+bfs(farthestNode,nodes);
+
+farthestNode=farthest(nodes);
+
+int orignalDiameter=farthestNode->distance;
+
+for(auto child:nodes)
+child->partOfDiameter|=child->distance==orignalDiameter; //if the distance of the child is equal to orignalDiameter then set child->partOfDiameter = true, or if it is alrady true then keep it as it is
+
+bfs(farthestNode,nodes);
+
+for(auto child:nodes)
+child->partOfDiameter|=child->distance==orignalDiameter;
+
+
+for(int i=0;i<n;i++){
+	cout<<(nodes[i]->partOfDiameter?orignalDiameter+1:orignalDiameter)<<endl;
+}
+
+
+
+}
